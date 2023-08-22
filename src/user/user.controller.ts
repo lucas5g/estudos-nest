@@ -8,9 +8,10 @@ import { RoleGuard } from "src/guards/role.guard";
 import { Roles } from "src/decorators/roles.decorator";
 import { Role } from "src/enums/role.enum";
 import { AuthGuard } from "src/guards/auth.guard";
+import { ThrottlerGuard } from "@nestjs/throttler";
 
 // @UseInterceptors(LogInterceptor)
-@UseGuards(AuthGuard, RoleGuard)
+@UseGuards(/*ThrottlerGuard,*/ AuthGuard, RoleGuard)
 @Roles(Role.Admin)
 @Controller('users')
 export class UserController {
