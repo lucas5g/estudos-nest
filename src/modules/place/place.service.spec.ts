@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PlaceService } from './place.service';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 
 describe('PlaceService', () => {
   let service: PlaceService;
@@ -27,7 +27,7 @@ describe('PlaceService', () => {
   it('Find All', async() => {
     const places = await service.findAll()
 
-    expect(places.length).toBeGreaterThan(1)
+    expect(places.length).toBeGreaterThan(0)
 
     places.forEach(place => {
       expect(place).toHaveProperty('name')

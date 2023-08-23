@@ -2,7 +2,7 @@ import { Body, Controller, Headers, HttpCode, Post, Request, UseGuards } from "@
 import { AuthLoginDTO } from "./dto/auth-login.dto";
 import { AuthRegisterDto } from "./dto/auth-register.dto";
 import { AuthForgetDTO } from "./dto/auth-forget.dto";
-import { UserService } from "src/user/user.service";
+import { UserService } from "src/modules/user/user.service";
 import { AuthService } from "./auth.service";
 import { AuthResetDto } from "./dto/auth-reset.dto";
 import { AuthGuard } from "src/guards/auth.guard";
