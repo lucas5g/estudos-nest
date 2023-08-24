@@ -7,6 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ModalityModule } from './modules/modality/modality.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { ModalityModule } from './modules/modality/modality.module';
     PlaceModule,
     ModalityModule,
     forwardRef(() =>  UserModule),
-    forwardRef(() => AuthModule),    
+    forwardRef(() => AuthModule),
+    FileModule,    
   ],
   controllers: [AppController],
   providers: [AppService, {
