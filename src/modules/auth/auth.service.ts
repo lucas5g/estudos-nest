@@ -5,6 +5,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { UserService } from "src/modules/user/user.service";
 import { AuthRegisterDto } from "./dto/auth-register.dto";
 import * as bcrypt from 'bcrypt'
+import { MailerService } from "@nestjs-modules/mailer";
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,8 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly mailer: MailerService
   ) { }
 
   createToken(user: User) {
@@ -52,6 +54,7 @@ export class AuthService {
       return false
     }
   }
+
   async login(email: string, password: string) {
 
     const user = await this.prisma.user.findFirst({
@@ -78,20 +81,56 @@ export class AuthService {
       throw new UnauthorizedException('E-mail está incorretor.')
     }
 
+    const token = this.jwtService.sign({
+      id: user.id
+    }, {
+      expiresIn: "10 minutes",
+      subject: String(user.id),
+      issuer: 'forget',
+      audience: 'users'
+    })
+
+    await this.mailer.sendMail({
+      subject: 'Recuperação de senha',
+      to: 'joao@mail.com',
+      template: 'forget',
+      context:{
+        name: user.name,
+        token
+      }
+    })
+
     return true
   }
 
   async reset(password: string, token: string) {
-    const id = 0
+    
+    try{
+      const data = this.jwtService.verify(token, {
+        issuer: 'forget',
+        audience: 'users'
+      })
 
-    const user = await this.prisma.user.update({
-      where: { id },
-      data: {
-        password
-      }
-    })
 
-    return this.createToken(user)
+      console.log(data)
+      const user = await this.prisma.user.update({
+        where: { 
+          id: data.id 
+        },
+        data: {
+          password: await bcrypt.hash(password, 12)
+        }
+      })
+
+      return this.createToken(user)
+      
+    }catch(error){
+      throw new BadRequestException(error)
+    }
+    
+
+
+
   }
 
   async register(data: AuthRegisterDto) {
