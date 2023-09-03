@@ -33,7 +33,7 @@ model Place {
 }
 
 model Modality {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -41,3 +41,23 @@ model Modality {
   @@map("modalities")
 }
 
+model Category {
+  id          Int     @id @default(autoincrement())
+  name        String  @db.VarChar(50)
+  description String? @db.Text
+  Video       Video[]
+
+  @@map("categories")
+}
+
+model Video {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
+  file_path   String
+  category_id Int
+
+  category Category @relation(fields: [category_id], references: [id])
+
+  @@map("videos")
+}

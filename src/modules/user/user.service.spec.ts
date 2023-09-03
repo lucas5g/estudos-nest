@@ -17,7 +17,10 @@ describe('User', () => {
   it('create', async() => {
     const data = {
       name: 'Marcos',
-      
+      email: 'marcos@mail.com',
+      password: 'qweqwe',
+      birthAt:'2000-02-05',
+      role: 1
     }
 
     const result = await service.create(data)

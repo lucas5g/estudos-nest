@@ -10,9 +10,13 @@ import { ModalityModule } from './modules/modality/modality.module';
 import { FileModule } from './file/file.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter'
+import { CategoriesModule } from './categories/categories.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { VideosModule } from './videos/videos.module';
 
 @Module({
   imports: [
+    PrismaModule,
     ThrottlerModule.forRoot({
       ttl:60,
       limit: 10
@@ -41,7 +45,9 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter'
         }
       }
     }),
-    FileModule,    
+    FileModule,
+    CategoriesModule,
+    VideosModule,    
   ],
   controllers: [AppController],
   providers: [AppService, {
