@@ -12,7 +12,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter'
 import { CategoriesModule } from './categories/categories.module';
 import { PrismaModule } from './prisma/prisma.module';
-import { VideosModule } from './videos/videos.module';
+import { VideosModule } from './modules/videos/videos.module';
 
 @Module({
   imports: [

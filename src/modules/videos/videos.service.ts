@@ -9,19 +9,28 @@ export class VideosService {
   constructor(private prisma:PrismaService){}
 
 
-  async create(createVideoDto: CreateVideoDto) {
+  async create(createVideoDto: CreateVideoDto & {file: Express.Multer.File}) {
 
-    const categoryExist = await this.prisma.video.count({
+    
+    const categoryExist = await this.prisma.category.count({
       where:{
         id: createVideoDto.category_id
       }
     }) !== 0
-
+    
     if(!categoryExist){
       throw new NotFoundException('Category Not Found')
     }
 
-    return 
+    // delete createVideoDto.file 
+    console.log(createVideoDto.file)
+    return createVideoDto
+    return this.prisma.video.create({
+      data:{
+        ...createVideoDto,
+        file_path: createVideoDto.file.path
+      }
+    })
   }
 
   findAll() {

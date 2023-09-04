@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger'
+import { Type } from "class-transformer"
 import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, Min } from "class-validator"
 
 export class CreateVideoDto {
@@ -13,6 +15,11 @@ export class CreateVideoDto {
 
   // @Min(1)
   @IsNumber()
-  // @IsNotEmpty()
+  @Type(() => Number)
   category_id: number 
+}
+
+export class CreateVideoWithUploadDto extends CreateVideoDto {
+  @ApiProperty({ type: 'string', format: 'binary' })
+  file: string;
 }
