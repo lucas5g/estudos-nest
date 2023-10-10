@@ -1,10 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, ParseFilePipe, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UploadedFile,
+  ParseFilePipe,
+  UseInterceptors,
+  Res,
+} from '@nestjs/common';
 import { VideosService } from './videos.service';
-import { CreateVideoDto, CreateVideoWithUploadDto } from './dto/create-video.dto';
+import {
+  CreateVideoDto,
+  CreateVideoWithUploadDto,
+} from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
 import { VideoFileValidator } from './video-file-validator';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
+import { createReadStream } from 'fs';
+import { join } from 'path';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { VideoSerializer } from './video.serializer';
 
 @Controller('videos')
 export class VideosController {
@@ -20,26 +39,28 @@ export class VideosController {
     @Body() createVideoDto: CreateVideoDto,
     @UploadedFile(
       new ParseFilePipe({
-        validators:[
+        validators: [
           new VideoFileValidator({
             maxSize: 1024 * 1024 * 100,
-            mimetype: 'video/mp4'
-          })
+            mimetype: 'video/mp4',
+          }),
         ],
-        errorHttpStatusCode: 422
-      })
+        errorHttpStatusCode: 422,
+      }),
     )
-    file: Express.Multer.File
+    file: Express.Multer.File,
   ) {
     return this.videosService.create({
       ...createVideoDto,
-      file
+      file,
     });
   }
 
   @Get()
-  findAll() {
-    return this.videosService.findAll();
+  async findAll() {
+    const videos = await this.videosService.findAll();
+    return videos 
+    // return videos.map((video) => new VideoSerializer(video));
   }
 
   @Get(':id')
@@ -55,5 +76,11 @@ export class VideosController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.videosService.remove(+id);
+  }
+
+  @Get('file/:file')
+  file(@Param('file') file: string, @Res() res: Response) {
+    const fileStream = createReadStream(join(process.cwd(), 'upload', file));
+    fileStream.pipe(res);
   }
 }

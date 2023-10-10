@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { VideosService } from './videos.service';
 import { VideosController } from './videos.controller';
-import multer from 'multer';
 import { MulterModule } from '@nestjs/platform-express';
+import multer from 'multer';
 import path from 'path'
 
 const storage = multer.diskStorage({
@@ -10,7 +10,9 @@ const storage = multer.diskStorage({
     cb(null, 'upload/')
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname))
+    cb(null, Date.now() + Math.random() + path.extname(file.originalname));
+
+    // cb(null, Date.now() + path.extname(file.originalname))
   }
 })
 
